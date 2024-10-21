@@ -24,21 +24,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: List installed packages
-        run: npm list --depth=0
-
-      - name: List test files
+      - name: Run tests
+        id: run-tests
         run: |
-          echo "Listing test files:"
-          ls -R test
-
-- name: Run tests
-  id: run-tests
-  run: |
-    ./node_modules/.bin/mocha --require @babel/register --reporter mocha-junit-reporter --verbose test/**/*.js > test-results.xml || { cat test-results.xml; echo "Test command failed"; exit 1; }
-    echo "Test results saved to test-results.xml."
-
-
+          npm test --reporter mocha-junit-reporter > test-results.xml
+          echo "Test results saved to test-results.xml."
       - name: Install xmlstarlet
         run: sudo apt-get install -y xmlstarlet
 
