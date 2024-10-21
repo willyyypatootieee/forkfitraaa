@@ -27,19 +27,3 @@ const generatePassword = (length, options) => {
 
     return pass;
 };
-    
- // Use value instead of textContent
- document.getElementById('generateBtn').addEventListener('click', () => {
-    const length = parseInt(document.getElementById('length').value, 10);
-    const options = {
-        includeUppercase: document.getElementById('includeUppercase').checked,
-        includeLowercase: document.getElementById('includeLowercase').checked,
-        includeNumbers: document.getElementById('includeNumbers').checked,
-        includeSpecialChars: document.getElementById('includeSpecialChars').checked,
-    };
-    
-    const password = generatePassword(length, options);
-    document.getElementById('passwordOutput').value = password;
-});
-
-// BONUS: Implement the copy to clipboard functionality
