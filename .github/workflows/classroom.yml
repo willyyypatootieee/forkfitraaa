@@ -29,7 +29,6 @@ jobs:
         run: |
           npm test --reporter mocha-junit-reporter > test-results.xml
           echo "Test results saved to test-results.xml."
-
       - name: Install xmlstarlet
         run: sudo apt-get install -y xmlstarlet
 
@@ -39,15 +38,11 @@ jobs:
           total_tests=$(xmlstarlet sel -t -v 'count(//testcase)' test-results.xml)
           passed_tests=$(xmlstarlet sel -t -v 'count(//testcase[not(failure)])' test-results.xml)
           max_score=100
-
           # Calculate score based on the number of passed tests
           score=$((passed_tests * max_score / total_tests))
-
           result_summary="Total tests: $total_tests\nPassed tests: $passed_tests\nScore: $score/$max_score\n"
-
           # Summary output
           echo -e "$result_summary"
-
           # Final summary
           if [[ $total_tests -gt 0 ]]; then
             echo "🏆 Grand total tests passed: $passed_tests/$total_tests tests"
