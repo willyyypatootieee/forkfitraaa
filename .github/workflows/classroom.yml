@@ -24,10 +24,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: List installed packages
+        run: npm list --depth=0
+
+      - name: List test files
+        run: |
+          echo "Listing test files:"
+          ls -R test
+
       - name: Run tests
         id: run-tests
         run: |
-          npm test --reporter mocha-junit-reporter > test-results.xml
+          # Run tests with mocha directly
+          ./node_modules/.bin/mocha --require @babel/register --reporter mocha-junit-reporter test/**/*.js > test-results.xml || { echo "Test command failed"; exit 1; }
           echo "Test results saved to test-results.xml."
 
       - name: Install xmlstarlet
@@ -39,15 +48,11 @@ jobs:
           total_tests=$(xmlstarlet sel -t -v 'count(//testcase)' test-results.xml)
           passed_tests=$(xmlstarlet sel -t -v 'count(//testcase[not(failure)])' test-results.xml)
           max_score=100
-
           # Calculate score based on the number of passed tests
           score=$((passed_tests * max_score / total_tests))
-
           result_summary="Total tests: $total_tests\nPassed tests: $passed_tests\nScore: $score/$max_score\n"
-
           # Summary output
           echo -e "$result_summary"
-
           # Final summary
           if [[ $total_tests -gt 0 ]]; then
             echo "🏆 Grand total tests passed: $passed_tests/$total_tests tests"
